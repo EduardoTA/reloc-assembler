@@ -129,7 +129,7 @@ def montar():
     print("------------------")
     codigo_obj = '' # String onde o código objeto será armazenado
 
-    # Inserir campo de nome no código-objeto
+    # Gerar campos de nome no código-objeto
     print("Bloco de Nome e Tipo:")
     checksum = 0
     numero_bytes_bloco = 4
@@ -145,7 +145,6 @@ def montar():
     else:
         checksum -= 0
         isMain_bloco = digitosBin(0,8)
-    
 
     nome_programa_byte_array = bytearray(nome_programa, "utf8")
     nome_bloco = []
@@ -163,6 +162,19 @@ def montar():
     .format(numero_bytes_bloco, tipo_bloco, isMain_bloco, nome_bloco, checksum))
 
     print("------------------")
+
+    # Inserir campos de nome na fita-objeto
+    codigo_obj += numero_bytes_bloco
+    print('fita-objeto: '+codigo_obj)
+    codigo_obj += tipo_bloco
+    print('fita-objeto: '+codigo_obj)
+    codigo_obj += isMain_bloco
+    print('fita-objeto: '+codigo_obj)
+    codigo_obj += ''.join(nome_bloco)
+    print('fita-objeto: '+codigo_obj)
+    codigo_obj += checksum
+
+    print('fita-objeto: '+codigo_obj)
 
     pass
 
