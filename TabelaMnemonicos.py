@@ -16,10 +16,11 @@ class TabelaMnemonicos:
             "RTN": "1100",
             "STOP": "1101"
         }
-        try:
-            return switcher.get(mnemonico)
-        except:
-            raise Exception("Mnemonico não está na Tabela de Mnemônicos (ou é pseudoinstrução)")
+        retorno = switcher.get(mnemonico)
+        if retorno == None:
+            return False
+        else:
+            return retorno
     
     # Retorna o tamanho da instrução em bytes
     def getSize(self, mnemonico):
@@ -35,32 +36,38 @@ class TabelaMnemonicos:
             "STORE": 2,
             "CALL": 2,
             "RTN": 1,
-            "STOP": 1
+            "STOP": 1,
+            "DB": 1, # Apesar de DB, DW e DA não serem pseudoinstruções, elas têm tamanho
+            "DW": 2,
+            "DA": 2
         }
-        try:
-            return switcher.get(mnemonico)
-        except:
-            raise Exception("Mnemonico não está na Tabela de Mnemônicos (ou é pseudoinstrução)")
+        retorno = switcher.get(mnemonico)
+        if retorno == None:
+            return 0
+        else:
+            return retorno
     
     # Testa se a instrução é pseudo
     def isPseudo(self, mnemonico):
         switcher = {
             "ORG": True,
             "END": True,
-            "DB": True,
-            "DW": True,
-            "DA": True,
             "NAME": True,
             "ENTRY": True,
             "EXTERNAL": True,
             "CSEG": True,
             "DSEG": True,
-            "ASEG": True
+            "ASEG": True,
+            "EQU": True,
+            "DB": True,
+            "DW": True,
+            "DA": True
         }
-        try:
-            return switcher.get(mnemonico)
-        except:
+        retorno = switcher.get(mnemonico)
+        if retorno == None:
             return False
+        else:
+            return retorno
 
     # Testa se o mnemonico é válido
     def isValido(self, mnemonico):
@@ -87,18 +94,20 @@ class TabelaMnemonicos:
             "STORE": True,
             "CALL": True,
             "RTN": True,
-            "STOP": True
+            "STOP": True,
+            "EQU": True
         }
-        try:
-            return switcher.get(mnemonico)
-        except:
+        retorno = switcher.get(mnemonico)
+        if retorno == None:
             return False
+        else:
+            return retorno
 
-    # Testa se o mnemonico tem operando
+    # Retorna Verdadeiro se o mnemonico tem operando
     def acceptsOperando(self, mnemonico):
         switcher = {
             "ORG": True,
-            "END": False,
+            "END": True,
             "DB": True,
             "DW": True,
             "DA": True,
@@ -119,9 +128,11 @@ class TabelaMnemonicos:
             "STORE": True,
             "CALL": True,
             "RTN": False,
-            "STOP": False
+            "STOP": False,
+            "EQU": True
         }
-        try:
-            return switcher.get(mnemonico)
-        except:
+        retorno = switcher.get(mnemonico)
+        if retorno == None:
             return False
+        else:
+            return retorno

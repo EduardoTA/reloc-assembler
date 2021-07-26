@@ -1,0 +1,14 @@
+            NAME        #FATORIAL
+            EXTERNAL    IN_FAT
+            ENTRY       RESULT
+LOOP        LOAD        IN_FAT
+            MUL         RESULT
+            STORE       RESULT
+            LOAD        IN_FAT
+            SUB         UM
+            JUMP0       FIM
+FIM         LOAD        RESULT
+TESTE       EQU         1
+UM          DB          1
+RESULT      DB          0
+            END
