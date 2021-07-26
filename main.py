@@ -5,6 +5,10 @@ from TabelaEquivalencias import TabelaEquivalencias
 from Linha import Linha as Linha
 from TabelaMnemonicos import TabelaMnemonicos as TabelaMnemonicos
 
+def digitosBin(n, bits):
+    s = bin(n & int("1"*bits, 2))[2:]
+    return ("{0:0>%s}" % (bits)).format(s)
+
 def montar():
     nome_arq = str(input("Inserir nome do arquivo com o código: "))
     f = 0
@@ -27,6 +31,7 @@ def montar():
     enderecamento_atual = 'Codigo' # Default
 
     nome_programa = '' # Nome do programa
+    tamanho_programa = 0 # Tamanho do programa, em bytes
 
     # Rotina de abertura de arquivo
     try:
@@ -105,7 +110,11 @@ def montar():
             ci_data += passo
         else:
             ci_code += passo
-        
+        tamanho_programa += passo
+
+    print("==================")
+    print("1º Passo:")
+    print("------------------")
     print('Nome do programa: {0}\n'.format(nome_programa))
     print('Tabela de Simbolos:\n')
     json_object = json.dumps(tabelaSimbolos.__str__(), indent = 4, sort_keys=False) 
@@ -114,6 +123,54 @@ def montar():
     json_object = json.dumps(tabelaEquivalencias.__str__(), indent = 4, sort_keys=False) 
     print(json_object)
     #print(json.dumps(json.loads(tabelaEquivalencias)))
+    
+    print("==================")
+    print("2º Passo:")
+    print("------------------")
+    codigo_obj = '' # String onde o código objeto será armazenado
+
+    # Inserir campo de nome no código-objeto
+    print("Bloco de Nome e Tipo:")
+    checksum = 0
+    numero_bytes_bloco = 4
+
+    tipo_bloco = -1 # Tipo=-1
+    checksum -= tipo_bloco
+    tipo_bloco = digitosBin(tipo_bloco, 8)
+
+    isMain_bloco = 0
+    if nome_programa == '#MAIN' or 'MAIN':
+        checksum -= 1
+        isMain_bloco = digitosBin(1,8)
+    else:
+        checksum -= 0
+        isMain_bloco = digitosBin(0,8)
+    
+
+    nome_programa_byte_array = bytearray(nome_programa, "utf8")
+    nome_bloco = []
+    for byte in nome_programa_byte_array:
+        checksum -= byte
+        numero_bytes_bloco += 1
+        nome_bloco.append(digitosBin(byte, 8))
+
+    checksum -= numero_bytes_bloco
+    numero_bytes_bloco = digitosBin(numero_bytes_bloco, 8)
+
+    checksum = digitosBin(checksum, 8)
+
+    print("n° de bytes: {0}\ntipo: {1}\nprograma principal: {2}\nnome: {3}\nchecksum: {4}"
+    .format(numero_bytes_bloco, tipo_bloco, isMain_bloco, nome_bloco, checksum))
+
+    print("------------------")
+
+    pass
+
+    # 2º Passo do Montador
+    for linha_arq in f:
+        pass
+        
+    
                 
 
 
