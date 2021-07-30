@@ -27,6 +27,8 @@ class TabelaEquivalencias:
             self.tabela[equivalencia_nova][j] = attributes[j]
         return
     
+    def getTabela(self):
+        return self.tabela
     
     def __str__(self):
         return self.tabela

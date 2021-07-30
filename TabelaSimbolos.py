@@ -27,6 +27,14 @@ class TabelaSimbolos:
             self.tabela[simbolo_novo][j] = attributes[j]
         return
     
+    def getTabela(self):
+        return self.tabela
     
     def __str__(self):
         return self.tabela
+    
+    def getTipoSim(self, simbolo):
+        try:
+            return self.tabela[simbolo]['tipoSim']
+        except:
+            return 'Interno'

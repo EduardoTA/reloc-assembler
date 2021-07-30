@@ -37,7 +37,7 @@ class TabelaMnemonicos:
             "CALL": 2,
             "RTN": 1,
             "STOP": 1,
-            "DB": 1, # Apesar de DB, DW e DA não serem pseudoinstruções, elas têm tamanho
+            "DB": 1, # Apesar de DB, DW e DA serem pseudoinstruções, elas têm tamanho
             "DW": 2,
             "DA": 2
         }
@@ -55,13 +55,13 @@ class TabelaMnemonicos:
             "NAME": True,
             "ENTRY": True,
             "EXTERNAL": True,
-            "CSEG": True,
-            "DSEG": True,
-            "ASEG": True,
+            #"CSEG": True,
+            #"DSEG": True,
+            #"ASEG": True,
             "EQU": True,
-            "DB": True,
-            "DW": True,
-            "DA": True
+            "DB": False,
+            "DW": False,
+            "DA": False
         }
         retorno = switcher.get(mnemonico)
         if retorno == None:
@@ -80,9 +80,9 @@ class TabelaMnemonicos:
             "NAME": True,
             "ENTRY": True,
             "EXTERNAL": True,
-            "CSEG": True,
-            "DSEG": True,
-            "ASEG": True,
+            #"CSEG": True,
+            #"DSEG": True,
+            #"ASEG": True,
             "JUMP": True,
             "JUMP0": True,
             "JUMPN": True,
@@ -114,9 +114,9 @@ class TabelaMnemonicos:
             "NAME": True,
             "ENTRY": True,
             "EXTERNAL": True,
-            "CSEG": True,
-            "DSEG": True,
-            "ASEG": True,
+            #"CSEG": True,
+            #"DSEG": True,
+            #"ASEG": True,
             "JUMP": True,
             "JUMP0": True,
             "JUMPN": True,
@@ -130,6 +130,31 @@ class TabelaMnemonicos:
             "RTN": False,
             "STOP": False,
             "EQU": True
+        }
+        retorno = switcher.get(mnemonico)
+        if retorno == None:
+            return False
+        else:
+            return retorno
+    
+    # Retorna verdadeiro se o mnemonico aceita operando simbólico
+    def acceptsSymbol(self, mnemonico):
+        switcher = {
+            "JUMP": True,
+            "JUMP0": True,
+            "JUMPN": True,
+            "ADD": True,
+            "SUB": True,
+            "MUL": True,
+            "DIV": True,
+            "LOAD": True,
+            "STORE": True,
+            "CALL": True,
+            "RTN": False,
+            "STOP": False,
+            "DB": False, # Apesar de DB, DW e DA serem pseudoinstruções, elas têm tamanho
+            "DW": False,
+            "DA": False
         }
         retorno = switcher.get(mnemonico)
         if retorno == None:

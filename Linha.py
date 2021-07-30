@@ -25,7 +25,6 @@ class Linha:
         if self.temRotulo:
             return self.linha[1]
         else:
-            print()
             return self.linha[0]
     
     # Retorna operando, se houver
