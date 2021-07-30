@@ -2,7 +2,6 @@ import json
 from typing import AsyncIterable
 
 from TabelaSimbolos import TabelaSimbolos
-from TabelaEquivalencias import TabelaEquivalencias
 from Linha import Linha as Linha
 from TabelaMnemonicos import TabelaMnemonicos as TabelaMnemonicos
 
@@ -18,7 +17,6 @@ def montar():
     linha = Linha()
     tabelaSimbolos = TabelaSimbolos()
     tabelaMnemonicos = TabelaMnemonicos()
-    tabelaEquivalencias = TabelaEquivalencias()
 
     tamanho_instrucao = 0 # Quanto o contador de Instrução deve andar
 
@@ -74,11 +72,6 @@ def montar():
                     # Se o programa encontrar essa pesudoinstrução, vai para o 2º passo imediatamente
                     elif operador == 'END':
                         break
-                    
-                    # Para esta última pseudoinstrução, ela insere ou atualiza a tabela de equivalências
-                    elif operador == 'EQU':
-                        tabelaSimbolos.tabela.pop(rotulo)
-                        tabelaEquivalencias.insertOrUpdate(equivalencia=rotulo, valor=operando)
                 
 
                 # Aqui não teremos problema nas pseudo instruções DB, DW e DA pois as outras pseudoinstruções
@@ -94,6 +87,7 @@ def montar():
                 # Se a linha conter pseudoinstrução
                 if tabelaMnemonicos.isPseudo(operador):
                     if operador == 'NAME':
+                        codigo_obj += ' '+digitosBin(0, 32)
                         # Gerar campos de nome no código-objeto
                         print("\n\nBloco de Nome e Tipo:")
                         checksum = 0 # Começa checksum em 0
@@ -143,6 +137,7 @@ def montar():
                         codigo_obj += checksum
                     
                     if operador == 'EXTERNAL':
+                        codigo_obj += ' '+digitosBin(0, 32)
                         # Gerar bloco de externos
                         print("\nBloco de Externals:")
                         checksum = 0 # Começa checksum em 0
@@ -169,7 +164,7 @@ def montar():
                         checksum = digitosBin(checksum, 8)
 
                         print("n° de bytes: {0}\ntipo: {1}\nnome: {2}\nc_ext: {3}\nchecksum: {4}"
-                        .format(numero_bytes_bloco, tipo_bloco, external_bloco, digitosBin(c_ext, 8), checksum))
+                        .format(numero_bytes_bloco, tipo_bloco, external_bloco, digitosBin(c_ext, 16), checksum))
 
                         print("------------------")
 
@@ -180,13 +175,14 @@ def montar():
                         #print('fita-objeto: '+codigo_obj)
                         codigo_obj += ''.join(external_bloco)
                         #print('fita-objeto: '+codigo_obj)
-                        codigo_obj += digitosBin(c_ext, 8)
+                        codigo_obj += digitosBin(c_ext, 16)
                         #print('fita-objeto: '+digitosBin(c_ext, 8))
                         codigo_obj += checksum
 
                         c_ext += 1 # Incrementa o contador de externals
                     
                     if operador == 'ENTRY':
+                        codigo_obj += ' '+digitosBin(0, 32)
                         # Gerar bloco de entries
                         print("\nBloco de Entries:")
                         checksum = 0 # Começa checksum em 0
@@ -233,6 +229,7 @@ def montar():
                     
                     if operador == 'ORG' or operador == 'END':
                         if len(codigo_obj_dados) > 0:
+                            codigo_obj += ' '+digitosBin(0, 32)
                             numero_bytes_bloco = int(len(codigo_obj_dados)/8) + 3
                             tipo = -4
                             endereco_origem = origem
@@ -257,10 +254,30 @@ def montar():
 
                             codigo_obj_dados = ''
                             checksum_bloco_dados = 0
-                            origem = operando
+                            if operador == 'ORG':
+                                origem = int(operando)
+                    
+                    if operador == 'END':
+                        codigo_obj += ' '+digitosBin(0, 32)
+                        numero_bytes_bloco = 4
+                        tipo = -5
+                        endereco_origem = origem
+                        checksum = numero_bytes_bloco - tipo - endereco_origem
+                        codigo_obj += digitosBin(numero_bytes_bloco, 8)
+                        codigo_obj += digitosBin(tipo, 8)
+                        codigo_obj += digitosBin(endereco_origem, 8)
+                        codigo_obj += digitosBin(checksum, 8)
+
+                        # Gerar bloco de fim
+                        print("\nBloco de Fim:")
+                        print("n° de bytes: {0}\ntipo: {1}\nendereço: {2}\nchecksum: {3}"
+                        .format(numero_bytes_bloco, tipo, endereco_origem, checksum))
+
+                        print("------------------")
+
+                        codigo_obj += ' '+digitosBin(0, 32)
 
                 if tabelaMnemonicos.getSize(operador) > 0:
-                    pass
                     Ai = '' # Byte indicador de tamanho de bloco
                     BiCi = '' # 2 bytes com dados
                     if tabelaMnemonicos.acceptsSymbol(operador): # Se o operador aceita simbólico
@@ -278,9 +295,14 @@ def montar():
                             BiCi = digitosBin(int(operando), 16)
                             codigo_obj_dados += Ai + BiCi
                         else:
-                            Ai = digitosBin(0, 8) # Como a instrução é de 1 byte, Ai=0
-                            BiCi = digitosBin(int(operando), 8) + '00000000'
-                            codigo_obj_dados += Ai + BiCi
+                            if operador == "STOP" or operador == "RTN":
+                                Ai = digitosBin(0, 8) # Como a instrução é de 1 byte, Ai=0
+                                BiCi = tabelaMnemonicos.getCodigo(operador) + '0000' + '00000000'
+                                codigo_obj_dados += Ai + BiCi
+                            else:
+                                Ai = digitosBin(0, 8) # Como a instrução é de 1 byte, Ai=0
+                                BiCi = digitosBin(int(operando), 8) + '00000000'
+                                codigo_obj_dados += Ai + BiCi
 
 
                         
@@ -292,42 +314,8 @@ def montar():
     print('Tabela de Simbolos:\n')
     json_object = json.dumps(tabelaSimbolos.__str__(), indent = 4, sort_keys=False) 
     print(json_object) 
-    print('\nTabela de Equivalência:')
-    json_object = json.dumps(tabelaEquivalencias.__str__(), indent = 4, sort_keys=False) 
-    print(json_object)
-    #print(json.dumps(json.loads(tabelaEquivalencias)))
-    
-    # print("==================")
-    # print("2º Passo:")
-    # print("------------------")
-    
-
-    
-
-    # Gerar Blocos de Entry
-
-    # print("Bloco de Nome e Tipo:")
-    # checksum = 0 # Começa checksum em 0
-    # numero_bytes_bloco = 5
-
-    # tipo_bloco = -2 # Tipo de bloco=-1
-    # checksum -= tipo_bloco # Subtrai a contribuição de tipo de bloco no checksum
-    # tipo_bloco = digitosBin(tipo_bloco, 8) # Converte tipo de bloco para binário de 1 byte
-
-    # lista_simbolos = [name for name, prop in tabelaSimbolos.getTabela()]
-
-    # # 2º Passo do Montador
-    # for linha_arq in f:
-    #     pass
         
     print('fita-objeto: '+codigo_obj)
-                
-
-
-
-
-
-
 
 print("==================")
 print("Montador Relocável")

@@ -1,0 +1,27 @@
+            NAME        #MAIN
+            EXTERNAL    MEDIA
+            EXTERNAL    REC
+            EXTERNAL    PESO_P1
+            EXTERNAL    PESO_P2
+            EXTERNAL    DIVS
+            ORG         100
+INICIO      LOAD        P1
+            CALL        PESO_P1
+            STORE       P1
+            LOAD        P2
+            CALL        PESO_P2
+            ADD         P1
+            STORE       P1
+            CALL        DIVS
+            STORE       P2
+            LOAD        P1
+            DIV         P2
+            STORE       RESULTADO
+            CALL        REC
+            STORE       ESTA_REC
+            STOP
+P1          DW          50
+P2          DW          42
+RESULTADO   DA          235
+ESTA_REC    DA          237
+            END

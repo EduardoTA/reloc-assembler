@@ -1,0 +1,15 @@
+            NAME        #PESOS
+            ORG         200
+            ENTRY       PESO_P1
+            ENTRY       PESO_P2
+            ENTRY       DIVS
+PESO_P1     MUL         P_P1
+            RTN
+PESO_P2     MUL         P_P2
+            RTN
+DIVS        LOAD        P_P1
+            ADD         P_P2
+            STOP
+P_P1        DW          2
+P_P2        DW          3
+            END

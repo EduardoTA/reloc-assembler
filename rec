@@ -1,0 +1,14 @@
+            NAME        #REC
+            ORG         300
+            ENTRY       REC
+REC         SUB         DESLOC
+            JUMPN       REPROVOU
+            LOAD        UM
+            RTN
+REPROVOU    LOAD        ZERO
+            RTN
+            STOP
+DESLOC      DW          50
+UM          DB          1
+ZERO        DB          0
+            END
