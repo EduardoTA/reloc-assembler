@@ -271,7 +271,7 @@ def montar():
                         # Gerar bloco de fim
                         print("\nBloco de Fim:")
                         print("n° de bytes: {0}\ntipo: {1}\nendereço: {2}\nchecksum: {3}"
-                        .format(numero_bytes_bloco, tipo, endereco_origem, checksum))
+                        .format(digitosBin(numero_bytes_bloco, 8), digitosBin(tipo, 8), digitosBin(endereco_origem, 8), digitosBin(checksum, 8)))
 
                         print("------------------")
 
