@@ -87,7 +87,7 @@ def montar():
                 # Se a linha conter pseudoinstrução
                 if tabelaMnemonicos.isPseudo(operador):
                     if operador == 'NAME':
-                        codigo_obj += ' '+digitosBin(0, 32)
+                        codigo_obj += digitosBin(0, 32)
                         # Gerar campos de nome no código-objeto
                         print("\n\nBloco de Nome e Tipo:")
                         checksum = 0 # Começa checksum em 0
@@ -137,7 +137,7 @@ def montar():
                         codigo_obj += checksum
                     
                     if operador == 'EXTERNAL':
-                        codigo_obj += ' '+digitosBin(0, 32)
+                        codigo_obj += digitosBin(0, 32)
                         # Gerar bloco de externos
                         print("\nBloco de Externals:")
                         checksum = 0 # Começa checksum em 0
@@ -182,7 +182,7 @@ def montar():
                         c_ext += 1 # Incrementa o contador de externals
                     
                     if operador == 'ENTRY':
-                        codigo_obj += ' '+digitosBin(0, 32)
+                        codigo_obj += digitosBin(0, 32)
                         # Gerar bloco de entries
                         print("\nBloco de Entries:")
                         checksum = 0 # Começa checksum em 0
@@ -229,7 +229,7 @@ def montar():
                     
                     if operador == 'ORG' or operador == 'END':
                         if len(codigo_obj_dados) > 0:
-                            codigo_obj += ' '+digitosBin(0, 32)
+                            codigo_obj += digitosBin(0, 32)
                             numero_bytes_bloco = int(len(codigo_obj_dados)/8) + 3
                             tipo = -4
                             endereco_origem = origem
@@ -258,7 +258,7 @@ def montar():
                                 origem = int(operando)
                     
                     if operador == 'END':
-                        codigo_obj += ' '+digitosBin(0, 32)
+                        codigo_obj += digitosBin(0, 32)
                         numero_bytes_bloco = 4
                         tipo = -5
                         endereco_origem = origem
@@ -275,7 +275,7 @@ def montar():
 
                         print("------------------")
 
-                        codigo_obj += ' '+digitosBin(0, 32)
+                        codigo_obj += digitosBin(0, 32)
 
                 if tabelaMnemonicos.getSize(operador) > 0:
                     Ai = '' # Byte indicador de tamanho de bloco
