@@ -99,7 +99,7 @@ def montar():
                         tipo_bloco = digitosBin(tipo_bloco, 8) # Converte tipo de bloco para binário de 1 byte
 
                         isMain_bloco = 0
-                        if nome_programa == '#MAIN' or 'MAIN':
+                        if (nome_programa == '#MAIN') or (nome_programa == 'MAIN'):
                             checksum -= 1
                             isMain_bloco = digitosBin(1,8)
                         else:
@@ -239,7 +239,7 @@ def montar():
                             codigo_obj += numero_bytes_bloco
                             tipo = digitosBin(tipo, 8)
                             codigo_obj += tipo
-                            endereco_origem = digitosBin(endereco_origem, 8)
+                            endereco_origem = digitosBin(endereco_origem, 16)
                             codigo_obj += endereco_origem
                             codigo_obj += codigo_obj_dados
                             checksum_bloco_dados = digitosBin(checksum_bloco_dados, 8)
@@ -265,7 +265,7 @@ def montar():
                         checksum = numero_bytes_bloco - tipo - endereco_origem
                         codigo_obj += digitosBin(numero_bytes_bloco, 8)
                         codigo_obj += digitosBin(tipo, 8)
-                        codigo_obj += digitosBin(endereco_origem, 8)
+                        codigo_obj += digitosBin(endereco_origem, 16)
                         codigo_obj += digitosBin(checksum, 8)
 
                         # Gerar bloco de fim
